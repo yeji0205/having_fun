@@ -1,14 +1,38 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import * as dat from 'lil-gui'
 
-THREE.ColorManagement.enabled = false
 
-/**
- * Base
- */
+/**********************************************************************************
+    Quote Generation
+**********************************************************************************/
+
+
+const generateQuote = () => {
+    const quotes = [
+        "Look up at the stars and not down at your feet. Try to make sense of what you see, and wonder about what makes the universe exist. Be curious.&emsp; -Stephen Hawking",
+        "When one\'s expectations are reduced to zero, one really appreciates everything one does have.&emsp; -Stephen Hawking",
+        "People won\'t have time for you if you are always angry or complaining.&emsp; -Stephen Hawking",
+        "If a machine can think, it might think more intelligently than we do, and then where should we be?&emsp; -Alan Turing",
+        "The more I study, the more insatiable do I feel my genius for it to be.&emsp; -Ada Lovelace",
+        "Learn from yesterday, live for today, hope for tomorrow. The important thing is not to stop questioning.&emsp; -Albert Einstein",
+        "A person who never made a mistake never tried anything new.&emsp; -Albert Einstein"
+    ];
+
+    let randomNum = Math.floor(Math.random() * (quotes.length));
+    document.getElementById("quoteDisplay").innerHTML = quotes[randomNum];
+}
+
+window.onload = () => {
+    generateQuote();
+    document.getElementById("newQuote").addEventListener("click", generateQuote);
+}
+
+
+/**********************************************************************************/
+
+// THREE.ColorManagement.enabled = false
+
 // Debug
 // const gui = new dat.GUI()
 
@@ -18,36 +42,31 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-
 /**********************************************************************************
-    LIGHT
+    TEXTURES
 **********************************************************************************/
-
-const pointLight1 = new THREE.PointLight(0xffffff, 1, 400, 2);
-pointLight1.position.set(-90, 10, 10);
-scene.add(pointLight1);
-
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.03);
-scene.add(ambientLight);
-
-const particleLight = new THREE.Mesh(
-    new THREE.SphereGeometry( .05, 8, 8 ),
-    new THREE.MeshBasicMaterial( { color: 0xffffff } )
-);
-scene.add( particleLight );
-
-particleLight.add( new THREE.PointLight( 0xffffff, 1, 20, 2) );
-
-
-/**
- * Textures
- */
 const textureLoader = new THREE.TextureLoader()
 const matcapTexture = textureLoader.load('8.png')
 
-/**********************************************************************************
-    SKYBOX
-**********************************************************************************/
+
+const planetColor = textureLoader.load('sand_muddy/Sand_Muddy_albedo.jpeg');
+const planetNormal = textureLoader.load('sand_muddy/Sand_Muddy_normal.jpg');
+const planetAO = textureLoader.load('sand_muddy/Sand_Muddy_ao.jpg');
+const planetHeight = textureLoader.load('sand_muddy/Sand_Muddy_height.jpg');
+const planetRough = textureLoader.load('sand_muddy/Sand_Muddy_roughness.jpeg');
+
+const earthTexture1k = textureLoader.load('earth/earthmap1k.jpg');
+const earthTexture2k = textureLoader.load('earth/earth2k.jpeg');
+const earthBump = textureLoader.load('earth/earthbump1k.jpg');
+const earthSpec = textureLoader.load('earth/earthspec1k.jpg');
+const earthCloudTexture = textureLoader.load('earth/storm_clouds_8k.jpg');
+
+
+const marsColor = textureLoader.load('mars/marsmap1k.jpg');
+const marsNormal = textureLoader.load('mars/mars_1k_normal.jpg');
+const marsBump = textureLoader.load('mars/marsbump1k.jpg');
+
+const jupiterColor = textureLoader.load('jupiter.jpeg');
 
 const skybox_back = textureLoader.load('skybox_blue/bkg1_back.png');
 const skybox_left = textureLoader.load('skybox_blue/bkg1_left.png');
@@ -55,6 +74,11 @@ const skybox_front = textureLoader.load('skybox_blue/bkg1_front.png');
 const skybox_right = textureLoader.load('skybox_blue/bkg1_right.png');
 const skybox_bottom = textureLoader.load('skybox_blue/bkg1_bot.png');
 const skybox_top = textureLoader.load('skybox_blue/bkg1_top.png');
+
+
+/**********************************************************************************
+    SKYBOX
+**********************************************************************************/
 
 const skyboxArray = [];
 skyboxArray.push(new THREE.MeshBasicMaterial({map: skybox_right, side: THREE.BackSide}));  // positive x
@@ -69,24 +93,30 @@ const skybox = new THREE.Mesh(skyboxGeo, skyboxArray);
 scene.add(skybox);
 
 
+/**********************************************************************************
+    LIGHT
+**********************************************************************************/
+
+const pointLight1 = new THREE.PointLight(0xffffff, 1, 450, 2);
+pointLight1.position.set(-80, 10, 10);
+scene.add(pointLight1);
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.03);
+scene.add(ambientLight);
+
+const particleLight = new THREE.Mesh(
+    new THREE.SphereGeometry( .1, 8, 8 ),
+    new THREE.MeshStandardMaterial( {
+        map: matcapTexture} )
+);
+// scene.add( particleLight );
+
+//particleLight.add( new THREE.PointLight( 0xffffff, 1, 20, 2) );
+
 
 /**********************************************************************************
     PLANETS
 **********************************************************************************/
-
-const planetColor = textureLoader.load('sand_muddy/Sand_Muddy_albedo.jpeg');
-const planetNormal = textureLoader.load('sand_muddy/Sand_Muddy_normal.jpg');
-const planetAO = textureLoader.load('sand_muddy/Sand_Muddy_ao.jpg');
-const planetHeight = textureLoader.load('sand_muddy/Sand_Muddy_height.jpg');
-const planetRough = textureLoader.load('sand_muddy/Sand_Muddy_roughness.jpeg');
-
-const earthTexture = textureLoader.load('earth.jpg');
-
-const marsColor = textureLoader.load('mars/marsmap1k.jpg');
-const marsNormal = textureLoader.load('mars/mars_1k_normal.jpg');
-const marsBump = textureLoader.load('mars/marsbump1k.jpg');
-
-const jupiterColor = textureLoader.load('jupiter.jpeg');
 
 const planet_geo = new THREE.TorusGeometry(9, 3, 16, 100); // TorusGeometry(radius : Float, tube : Float, radialSegments : Integer, tubularSegments : Integer, arc : Float)
 const planet_mat = new THREE.MeshStandardMaterial({
@@ -102,28 +132,46 @@ const torus = new THREE.Mesh(planet_geo, planet_mat);
 torus.position.set(30, 20, -100); // move the torus a bit backside, so that we can have better scene view
 //scene.add(torus);
 
+// EARTH
 const earth = new THREE.Mesh(
   new THREE.SphereGeometry(5, 32, 32),
-  new THREE.MeshStandardMaterial({
-    map: earthTexture
+  new THREE.MeshPhongMaterial({
+    map: earthTexture2k,
+    bumpMap: earthBump,
+    bumpScale: 0.08,
+    specularColorMap: earthSpec,
+    specularColor: 'white'
   })
 );
 earth.rotateY(Math.PI / 3.5)
 earth.position.z = 20;
 scene.add(earth);
 
+const earthCloud = new THREE.Mesh(
+    new THREE.SphereGeometry(5.1, 32, 32),
+    new THREE.MeshPhongMaterial({
+        alphaMap: earthCloudTexture,
+        transparent: true
+    })
+)
+earthCloud.rotateY(Math.PI / 3.5)
+earthCloud.position.z = 20;
+scene.add(earthCloud);
 
+// MARS
 const mars = new THREE.Mesh(
   new THREE.SphereGeometry(3, 32, 32),
   new THREE.MeshStandardMaterial({
     map: marsColor,
     normalMap: marsNormal,
-    bumpMap: marsBump
+    bumpMap: marsBump,
+    bumpScale: 0.1
    })
 )
 mars.position.z = 50;
 scene.add(mars);
 
+// JUPITER
 const jupiter = new THREE.Mesh(
   new THREE.SphereGeometry(50, 32, 32),
   new THREE.MeshStandardMaterial({
@@ -145,33 +193,33 @@ scene.add(jupiter);
 // moveCamera();
 
 
-/**
- * Scroll
- */
-let scrollY = window.scrollY
-let currentSection = 0
+// /**
+//  * Scroll
+//  */
+// let scrollY = window.scrollY
+// let currentSection = 0
 
-window.addEventListener('scroll', () =>
-{
-    scrollY = window.scrollY
-    const newSection = Math.round(scrollY / sizes.height)
+// window.addEventListener('scroll', () =>
+// {
+//     scrollY = window.scrollY
+//     const newSection = Math.round(scrollY / sizes.height)
 
-    if(newSection != currentSection)
-    {
-        currentSection = newSection
+//     if(newSection != currentSection)
+//     {
+//         currentSection = newSection
 
-        gsap.to(
-            sectionMeshes[currentSection].rotation,
-            {
-                duration: 1.5,
-                ease: 'power2.inOut',
-                x: '+=6',
-                y: '+=3',
-                z: '+=1.5'
-            }
-        )
-    }
-})
+//         gsap.to(
+//             sectionMeshes[currentSection].rotation,
+//             {
+//                 duration: 1.5,
+//                 ease: 'power2.inOut',
+//                 x: '+=6',
+//                 y: '+=3',
+//                 z: '+=1.5'
+//             }
+//         )
+//     }
+// })
 
 /**********************************************************************************
     PARTICLES
@@ -188,13 +236,13 @@ const colors = new Float32Array(particleCount * 3);
 for(let i = 0; i < particleCount * 3; i++)
 {
   particlePosition[i] = (Math.random() - 0.5) * 200; // 마스랜덤은 오직 양수의 범위라서 즉 오른쪽에만 분포됨으로 -0.5를 해서 양쪽으로 분포되도록 한다.
-  //colors[i] = Math.random();
+  // colors[i] = Math.random();
 }
 for(let i = 0; i < particleCount * 3; i+=3)
 {
   colors[i + 0] = 1.0;
   colors[i + 1] = 0.9;
-  colors[i + 2] = 0.5;
+  colors[i + 2] = 0.8;
 }
 
 particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePosition, 3));
@@ -213,53 +261,21 @@ const particleMaterial = new THREE.PointsMaterial({
 const particles = new THREE.Points(particleGeo, particleMaterial);
 scene.add(particles);
 
+
+
 /**********************************************************************************
-    FONTS
+    CAMERA
 **********************************************************************************/
-const fontLoader = new FontLoader()
-
-fontLoader.load(
-    '/fonts/helvetiker_regular.typeface.json',
-    (font) =>
-    {
-        // Material
-        //const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture })
-        const material = new THREE.MeshStandardMaterial({
-            color: '#343741',
-            metalness: 0.7,
-            roughness: 0.4
-         })
-
-        // Text
-        const textGeometry = new TextGeometry(
-            'Hello!',
-            {
-                font: font,
-                size: 2.5,
-                height: 0.2,
-                curveSegments: 20,
-                bevelEnabled: true,
-                bevelThickness: 0.1,
-                bevelSize: 0.05,
-                bevelOffset: 0,
-                bevelSegments: 5
-            }
-        )
-        textGeometry.center()
-
-        const text = new THREE.Mesh(textGeometry, material)
-        text.rotation.y = Math.PI
-        scene.add(text)
-    }
-)
-
-/**
- * Sizes
- */
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
+
+const camera = new THREE.PerspectiveCamera(35, sizes.width  / sizes.height, 0.1, 1000);
+//camera.position.set(-4, 0, -12);
+camera.position.set(-13, 2, 40);
+scene.add(camera)
+
 
 window.addEventListener('resize', () =>
 {
@@ -277,21 +293,62 @@ window.addEventListener('resize', () =>
 })
 
 /**********************************************************************************
-    CAMERA
-**********************************************************************************/
-const camera = new THREE.PerspectiveCamera(35, sizes.width  / sizes.height, 0.1, 1000);
-camera.position.set(-15, 0, -25);
-scene.add(camera)
-
-
-/**********************************************************************************
     CONTROLS
 **********************************************************************************/
-const controls = new OrbitControls(camera, document.body)
+const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 controls.maxDistance = 200;  // max distance of camera from the center of scene
-controls.minDistance = 30;
+controls.minDistance = 10;
+controls.panSpeed = 0.3
 
+/**********************************************************************************
+    mouse movement
+**********************************************************************************/
+const rayCaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+let INTERSECTED;
+
+let mouseX = 0;
+let mouseY = 0;
+
+let targetX = 0;
+let targetY = 0;
+
+const windowHalfX = window.innerWidth / 2;
+const windowHalfY = window.innerHeight / 2;
+
+// function onDocumentMouseMove(event) {
+//   mouseX = (event.clientX - windowHalfX);
+//   mouseY = (event.clientY - windowHalfY);
+// }
+
+// function onPointerMove( event ) {
+
+//  	// calculate pointer position in normalized device coordinates
+//  	// (-1 to +1) for both components
+// 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+// 	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+// }
+
+document.addEventListener('mousemove', (event) => {
+    pointer.x = (event.clientX - windowHalfX);
+	pointer.y = (event.clientY - windowHalfY);
+
+    rayCaster.setFromCamera( pointer, camera );
+    var intersects = rayCaster.intersectObjects( scene.children );
+        if ( intersects.length > 0 ) {
+            targetX = pointer.x * 0.001;
+            targetY = pointer.y * 0.001;
+
+            earth.rotation.y += 0.05 * (targetX - earth.rotation.y);
+            earth.rotation.x += 0.05 * (targetY - earth.rotation.x);
+
+            earthCloud.rotation.y += 0.05 * (targetX - earth.rotation.y);
+            earthCloud.rotation.x += 0.05 * (targetY - earth.rotation.x);
+
+        }
+    }, false);
 
 /**********************************************************************************
     RENDERER
@@ -311,9 +368,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 const lightHelper = new THREE.PointLightHelper(pointLight1);
 const gridHelper = new THREE.GridHelper(200, 50);
 const cameraHelper = new THREE.CameraHelper(camera);
-// scene.add(lightHelper, gridHelper, cameraHelper);
+//scene.add(lightHelper, gridHelper, cameraHelper);
 
+// rayCaster.setFromCamera(pointer, camera);
+// const intersects = rayCaster.intersectObjects(scene.children);
 
+// console.log(intersects);
 /**********************************************************************************
     ANIMATE & EVENT HANDLING
 **********************************************************************************/
@@ -323,21 +383,22 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    torus.rotation.x += 0.01;
-    torus.rotation.y += 0.01;
-    torus.rotation.z += 0.01;
+    // torus.rotation.x += 0.01;
+    // torus.rotation.y += 0.01;
+    // torus.rotation.z += 0.01;
 
-    earth.rotation.y += 0.002;
+    earth.rotation.y += 0.0015;
+    earthCloud.rotation.y += 0.002;
 
     mars.rotation.y += 0.001;
-
     jupiter.rotation.y += 0.005;
 
-    const timer = Date.now() * 0.00025;
+    // const timer = Date.now() * 0.00025;
 
-    particleLight.position.x = Math.sin( timer * 7 ) * 3;
-    particleLight.position.y = Math.cos( timer * 5 ) * 4;
-    particleLight.position.z = Math.cos( timer * 3 ) * 3;
+    // particleLight.position.x = Math.sin( timer * 7 ) * 3;
+    // particleLight.position.y = Math.cos( timer * 5 ) * 4;
+    // particleLight.position.z = Math.cos( timer * 3 ) * 3;
+    // console.log(camera.position);
 
     // Update controls
     controls.update()
@@ -348,5 +409,4 @@ const tick = () =>
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
-
 tick()
