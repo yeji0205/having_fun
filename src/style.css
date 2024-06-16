@@ -172,7 +172,7 @@ footer.mouseMove
     100% { color: white; }
 }
 
-@media (max-width: 700px)
+@media (max-width: 800px)
 {
     p
     {
@@ -230,6 +230,11 @@ footer.mouseMove
         font-family: Space Mono;
         font-size: 12px;
         font-style: normal;
+    }
+
+    footer.mouseMove
+    {
+        font-size: 10px;
     }
 
     /* footer {
