@@ -23,9 +23,14 @@ const generateQuote = () => {
     document.getElementById("quoteDisplay").innerHTML = quotes[randomNum];
 }
 
+// Remove "Click and move around" sentence once the user clicked anywhere on web
+const elToRemove = document.getElementById("mouseMove")
+window.addEventListener("mousedown", () => elToRemove.remove())
+
 window.onload = () => {
     generateQuote();
     document.getElementById("newQuote").addEventListener("click", generateQuote);
+
 }
 
 
@@ -41,6 +46,7 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
 
 /**********************************************************************************
     TEXTURES
@@ -97,21 +103,21 @@ scene.add(skybox);
     LIGHT
 **********************************************************************************/
 
-const pointLight1 = new THREE.PointLight(0xffffff, 1, 450, 2);
-pointLight1.position.set(-80, 10, 10);
+const pointLight1 = new THREE.PointLight(0xffffff, 0.7, 450, 2);
+pointLight1.position.set(0, 5, 5);
 scene.add(pointLight1);
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.03);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
 
-const particleLight = new THREE.Mesh(
-    new THREE.SphereGeometry( .1, 8, 8 ),
-    new THREE.MeshStandardMaterial( {
-        map: matcapTexture} )
-);
+// const particleLight = new THREE.Mesh(
+//     new THREE.SphereGeometry( .1, 8, 8 ),
+//     new THREE.MeshStandardMaterial( {
+//         map: matcapTexture} )
+// );
 // scene.add( particleLight );
 
-//particleLight.add( new THREE.PointLight( 0xffffff, 1, 20, 2) );
+// particleLight.add( new THREE.PointLight( 0xffffff, 1, 20, 2) );
 
 
 /**********************************************************************************
@@ -272,9 +278,10 @@ const sizes = {
 }
 
 const camera = new THREE.PerspectiveCamera(35, sizes.width  / sizes.height, 0.1, 1000);
-//camera.position.set(-4, 0, -12);
-camera.position.set(-13, 2, 40);
+camera.position.set(-2, 0, -8);
+//camera.position.set(-13, 2, 40);
 scene.add(camera)
+
 
 
 window.addEventListener('resize', () =>
@@ -297,7 +304,7 @@ window.addEventListener('resize', () =>
 **********************************************************************************/
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.maxDistance = 200;  // max distance of camera from the center of scene
+controls.maxDistance = 150;  // max distance of camera from the center of scene
 controls.minDistance = 10;
 controls.panSpeed = 0.3
 
@@ -370,19 +377,18 @@ const gridHelper = new THREE.GridHelper(200, 50);
 const cameraHelper = new THREE.CameraHelper(camera);
 //scene.add(lightHelper, gridHelper, cameraHelper);
 
-// rayCaster.setFromCamera(pointer, camera);
-// const intersects = rayCaster.intersectObjects(scene.children);
+rayCaster.setFromCamera(pointer, camera);
+const intersects = rayCaster.intersectObjects(scene.children);
 
-// console.log(intersects);
+
 /**********************************************************************************
     ANIMATE & EVENT HANDLING
 **********************************************************************************/
+
 const clock = new THREE.Clock()
 
 const tick = () =>
 {
-    const elapsedTime = clock.getElapsedTime()
-
     // torus.rotation.x += 0.01;
     // torus.rotation.y += 0.01;
     // torus.rotation.z += 0.01;
@@ -398,7 +404,6 @@ const tick = () =>
     // particleLight.position.x = Math.sin( timer * 7 ) * 3;
     // particleLight.position.y = Math.cos( timer * 5 ) * 4;
     // particleLight.position.z = Math.cos( timer * 3 ) * 3;
-    // console.log(camera.position);
 
     // Update controls
     controls.update()

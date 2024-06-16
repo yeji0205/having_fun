@@ -1,3 +1,7 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
 *
 {
     margin: 0;
@@ -18,11 +22,11 @@ canvas {
   }
 
    */
-   body
-   {
+body{
     font-family: 'Space Mono', sans-serif;
-    padding-top: 3%;
-   }
+    touch-action: pan-y pinch-zoom;
+}
+
 
 .webgl
 {
@@ -32,19 +36,24 @@ canvas {
     outline: none;
 }
 
+#htmlPart{
+    padding-left: 2%;
+}
+
 p
 {
+
     padding-left: 10%;
     display: flex;
     position: relative;
-    width: 592px;
+    width: 600px;
     flex-shrink: 0;
     color: #FFF;
     font-family: Space Mono;
     font-size: 17.155px;
     font-style: normal;
     font-weight: 400;
-    line-height: 22.873px
+    line-height: 22.873px;
 }
 
 h1
@@ -53,38 +62,27 @@ h1
     align-items: center;
     position: relative;
     color: #ffffff;
-    padding-top: 3%;
     padding-left: 10%;
     padding-right: 45%;
 }
 
-h3
-{
-    display: flex;
-    align-items: center;
-    position: relative;
-    color: #ffffff;
-    padding-top: 0.5%;
-    padding-left: 8%;
-    padding-right: 45%;
+div {
+    background-color: white;
+    width: 200px;
+    height: 100px;
+    padding-left: 10%;
 }
-
-
 /***************
     Button
 ****************/
-/* CSS */
 .button-55 {
   align-self: center;
   background: transparent;
-  background-image: none;
-  background-position: 0 90%;
-  background-repeat: repeat no-repeat;
-  background-size: 4px 3px;
   border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
   border-style: solid;
   border-width: 2px;
-  box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
+  border-color: #ffffff;
+  /* box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;*/
   box-sizing: border-box;
   color: #ffffff;
   cursor: pointer;
@@ -93,7 +91,7 @@ h3
   font-size: 16px;
   line-height: 23px;
   margin-left: 10%;
-  margin-top: 10px;
+  margin-top: 11%;
   outline: none;
   padding: 5px 15px 5px 15px;
   position: relative;
@@ -150,8 +148,12 @@ footer {
 
 a
   {
-    padding-right: 10px;
+    padding-right: 15px;
   }
+a:hover{
+    transition: 100ms;
+    scale: 1.1;
+}
 
 .mailto-link
 {
@@ -159,11 +161,22 @@ a
 	padding: 8px 0;
 }
 
-@media (max-width: 600px)
+footer.mouseMove
+{
+    margin-bottom: 10%;
+    animation: color-change 3s infinite;
+}
+@keyframes color-change {
+    0% { color: white; }
+    50% { color: transparent; }
+    100% { color: white; }
+}
+
+@media (max-width: 700px)
 {
     p
     {
-        padding-left: 10%;
+        padding-left: 5%;
         display: flex;
         position: relative;
         width: 80%;
@@ -175,6 +188,7 @@ a
 
     h1
     {
+        padding-left: 5%;
         display: flex;
         align-items: center;
         position: relative;
@@ -182,30 +196,32 @@ a
         font-size: 15px;
         color: #ffffff;
         padding-top: 5%;
-        padding-left: 10%;
         padding-right: 45%;
     }
 
     img
     {
-        width: 50%;
+        width: 25px;
         height: auto;
     }
 
     a
     {
-        padding-right: 0;
+        padding-right: 12px;
+        align-content: center;
     }
 
     .button-55
     {
+        margin-left: 5%;
+        margin-bottom: 2%;
         font-size: 12px;
         padding: 3px 10px 3px 10px;
     }
 
     #quoteDisplay
     {
-        padding-left: 10%;
+        padding-left: 5%;
         display: flex;
         position: relative;
         width: 80%;
@@ -215,4 +231,15 @@ a
         font-size: 12px;
         font-style: normal;
     }
+
+    /* footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: white;
+        text-align: center;
+        padding-bottom: 3%;
+        font-size: 12px;
+    } */
 }
