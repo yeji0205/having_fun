@@ -195,7 +195,7 @@ footer.mouseMove
         width: 80%;
         font-size: 15px;
         color: #ffffff;
-        padding-top: 5%;
+        padding-top: 2%;
         padding-right: 45%;
     }
 
@@ -232,7 +232,7 @@ footer.mouseMove
         font-style: normal;
     }
 
-    footer.mouseMove
+    footer
     {
         font-size: 10px;
     }
